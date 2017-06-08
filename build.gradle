@@ -1,0 +1,49 @@
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'jetty'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+}
+
+war {
+    archiveName = rootProject.name + ".war"
+}
+
+dependencies {
+    def jacksonVersion = '2.6.3'
+    def springVersion = '4.1.6.RELEASE'
+
+    compile "javax.servlet:javax.servlet-api:3.1.0"
+    testCompile "junit:junit:4.11"
+
+    compile "org.springframework:spring-jdbc:${springVersion}"
+    compile "org.springframework:spring-tx:${springVersion}"
+    compile "org.springframework:spring-webmvc:${springVersion}"
+
+    compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+    compile "org.springframework:spring-jdbc:${springVersion}"
+    compile "org.springframework:spring-tx:${springVersion}"
+    compile "org.springframework:spring-webmvc:${springVersion}"
+    compile "org.mybatis:mybatis:3.3.0"
+    compile "org.mybatis:mybatis-spring:1.2.3"
+    compile "mysql:mysql-connector-java:5.1.38"
+    compile "org.apache.commons:commons-dbcp2:2.1.1"
+    runtime("jstl:jstl:1.2")
+}
+
+processResources {
+    from 'src/main/resources'
+    from 'src/main/java'
+    include "**/*.xml"
+    include "**/*.p12"
+    include "i18n/*"
+}
