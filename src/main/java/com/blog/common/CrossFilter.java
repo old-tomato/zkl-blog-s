@@ -1,35 +1,34 @@
 package com.blog.common;
 
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 /**
  * Created by 52426 on 2017/6/7.
  */
-public class CrossFilter extends OncePerRequestFilter {
+public class CrossFilter implements Filter {
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        System.out.print("======================");
+    public void init(FilterConfig filterConfig) throws ServletException {
 
-        Enumeration<String> headerNames = request.getHeaderNames();
-        if(headerNames.hasMoreElements()){
-            System.out.println(headerNames.nextElement());
-            headerNames.nextElement();
-        }
+    }
 
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
-            // CORS "pre-flight" request
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-            response.addHeader("Access-Control-Max-Age", "1800");//30 min
-        }
-        filterChain.doFilter(request, response);
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse r = (HttpServletResponse) response;
+        // 指代从任何地址过来的网址都是可以接受的
+        r.setHeader("Access-Control-Allow-Origin","*");
+        // 指允许接受的几种方法
+        r.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS,DELETE");
+        r.setHeader("Access-Control-Max-Age","3600");
+        // 可以接受的头信息，最后一个是我自己加上去的
+        r.setHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept, Z-Blog-Cookie");
+        chain.doFilter(request, r);
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }

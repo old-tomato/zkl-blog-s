@@ -1,10 +1,15 @@
 package com.blog.common;
 
+import com.blog.dao.user.UserCookieMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,22 +21,64 @@ import java.util.logging.Logger;
 public class CommonInterceptor extends HandlerInterceptorAdapter {
 
     Logger logger = Logger.getLogger(this.getClass().getName());
+    private static final String ZBLOG_HEAD = "Z-Blog-Cookie";
+
+    @Autowired
+    private UserCookieMapper userCookieMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        这里做统一的COOKIE校验
-        logger.info("pre handle");
-//        getHeadersInfo(request);
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("text/html; charset=utf-8");
-//
-//        PrintWriter writer = response.getWriter();
-//        ObjectMapper om = new ObjectMapper();
-//        String error = om.writer().writeValueAsString(new DataMessage("error!!!!"));
-//        writer.append(error);
-//        writer.close();
-        return super.preHandle(request, response, handler);
-//        return true;
+        getHeadersInfo(request);
+        //这里做统一的COOKIE校验
+        // 对于登陆以及注册的接口不校验COOKIE
+        logger.info(request.getRequestURI());
+        String requestURI = request.getRequestURI();
+        if(
+//                requestURI.equals("/login/loginInfo")
+//                ||
+                requestURI.equals("/login/signIn")){
+            return true;
+        }else{
+            // 校验COOKIE，如果校验失败，就需要界面返回到登陆界面
+            return checkCookie(request, response);
+        }
+    }
+
+    private boolean checkCookie(HttpServletRequest request, HttpServletResponse response) {
+        String cookie = request.getHeader(ZBLOG_HEAD);
+        if(StringUtils.isEmpty(cookie)){
+            // 返回登陆界面
+            backToLoginPage(response);
+            return false;
+        }
+        // 请求数据库返回的数据
+        Integer uid = userCookieMapper.getUid(cookie);
+        if(uid == null || uid == 0){
+            backToLoginPage(response);
+            return false;
+        }
+        // 校验通过，更新COOKIE
+        userCookieMapper.updateCookie(uid);
+        return true;
+    }
+
+    private void backToLoginPage(HttpServletResponse response){
+        PrintWriter writer = null;
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("text/html; charset=utf-8");
+            writer = response.getWriter();
+            ObjectMapper om = new ObjectMapper();
+            String error = om.writer().writeValueAsString(new DataMessage(DataMessage.CODE_COOKIE_ERROR, "access denied"));
+            writer.append(error);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(writer != null){
+                writer.close();
+            }
+        }
+
     }
 
     private Map<String, String> getHeadersInfo(HttpServletRequest request) {
@@ -48,14 +95,11 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        logger.info("post handle");
         super.postHandle(request, response, handler, modelAndView);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        logger.info("after completion");
-
         super.afterCompletion(request, response, handler, ex);
     }
 }

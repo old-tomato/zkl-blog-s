@@ -68,7 +68,7 @@
         <!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
         <property name="configLocation" value="/WEB-INF/mybatis-config.xml" />
         <!-- 自动扫描mapping.xml文件 -->
-        <property name="mapperLocations" value="classpath:com/blog/dao/*.xml"/>
+        <property name="mapperLocations" value="classpath:com/blog/dao/*/*.xml"/>
         <property name="typeAliasesPackage" value="com.blog.model" />
         <!-- 加入一个有关于时间的对象处理器 -->
         <property name="typeHandlers">

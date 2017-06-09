@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.blog.dao.user.UserCookieMapper">
+    <resultMap id="defaultMap" type="com.blog.model.UserCookieInfo">
+        <result property="uid" column="uid"/>
+        <result property="cookie" column="cookie"/>
+        <result property="availableTime" column="available_time"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="getUid" resultType="Integer">
+        SELECT cookie FROM user_cookie t
+        <![CDATA[
+          WHERE now() <= available_time,
+          t.cookie = #{cookie}
+        ]]>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO user_cookie
+        (uid, cookie, available_time, create_time)
+        VALUE
+        (#{uid},#{cookie},DATE_ADD(now(), INTERVAL 7 DAY),now())
+    </insert>
+
+    <update id="updateCookie">
+        UPDATE user_cookie
+        SET cookie = (DATE_ADD(now(), INTERVAL 7 DAY))
+        WHERE uid = #{uid};
+    </update>
+
+</mapper>

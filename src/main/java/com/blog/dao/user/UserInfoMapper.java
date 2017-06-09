@@ -1,6 +1,7 @@
-package com.blog.dao;
+package com.blog.dao.user;
 
 import com.blog.model.UserInfo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,4 +13,5 @@ import java.util.List;
 public interface UserInfoMapper {
     List<UserInfo> query();
     void insertNewUser(UserInfo userInfo);
+    String queryUsernameRepeat(@Param("username")String username);
 }

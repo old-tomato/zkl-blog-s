@@ -10,6 +10,7 @@ public class UserInfo {
     private int uid;
     private String username;
     private String password;
+    private String mailAddress;
     private LocalDateTime createTime;
 
     public int getId() {
@@ -42,6 +43,14 @@ public class UserInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getMailAddress() {
+        return mailAddress;
+    }
+
+    public void setMailAddress(String mailAddress) {
+        this.mailAddress = mailAddress;
     }
 
     public LocalDateTime getCreateTime() {

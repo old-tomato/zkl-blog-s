@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.blog.dao.security.UidQueueMapper">
+    <resultMap id="defaultMap" type="com.blog.model.UidQueueInfo">
+        <result property="uidQueue" column="uid_queue"/>
+    </resultMap>
+
+    <select id="queryUid" resultType="Integer">
+        SELECT uid_queue FROM uid_queue
+    </select>
+
+    <update id="increaseUid">
+        update uid_quene set uid_quene = uid_quene + 1
+    </update>
+
+</mapper>
