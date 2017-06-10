@@ -7,24 +7,40 @@
         <result property="uid" column="uid"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
-        <result property="emailAddress" column="email_address"/>
+        <result property="mailAddress" column="mail_address"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
 
     <select id="query" resultMap="defaultMap">
-        SELECT id, uid, username, password, email_address, create_time
+        SELECT id, uid, username, mail_address, create_time
         FROM user_info t
         ORDER t.create_time DESC
     </select>
 
     <insert id="insertNewUser">
-        insert into blog_center.user_info (uid, username, password, email_address,create_time) value(#{uid} , #{username}, #{password}, #{emailAddress}, now());
+        insert into blog_center.user_info (uid, username, password, mail_address,create_time) value(#{uid} , #{username}, #{password}, #{mailAddress}, now());
     </insert>
 
     <select id="queryUsernameRepeat" resultType="string">
         SELECT username
         FROM user_info
+        limit 1
         WHERE username=#{username}
+    </select>
+
+    <select id="queryOneUser" resultMap="defaultMap">
+        SELECT id, uid, username, password, mail_address, create_time
+        FROM user_info t
+        WHERE t.username=#{username}
+        AND   t.password =#{password}
+        limit 1
+    </select>
+
+    <select id="queryByUid" resultMap="defaultMap">
+        SELECT id, uid, username, mail_address, create_time
+        FROM user_info t
+        limit 1
+        WHERE t.uid = #{uid}
     </select>
 
 </mapper>

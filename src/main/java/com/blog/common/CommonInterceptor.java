@@ -33,10 +33,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
         // 对于登陆以及注册的接口不校验COOKIE
         logger.info(request.getRequestURI());
         String requestURI = request.getRequestURI();
-        if(
-//                requestURI.equals("/login/loginInfo")
-//                ||
-                requestURI.equals("/login/signIn")){
+        if(requestURI.equals("/login/login") || requestURI.equals("/login/regist")){
             return true;
         }else{
             // 校验COOKIE，如果校验失败，就需要界面返回到登陆界面
@@ -69,7 +66,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
             response.setContentType("text/html; charset=utf-8");
             writer = response.getWriter();
             ObjectMapper om = new ObjectMapper();
-            String error = om.writer().writeValueAsString(new DataMessage(DataMessage.CODE_COOKIE_ERROR, "access denied"));
+                String error = om.writer().writeValueAsString(new DataMessage(DataCodeConstants.CODE_COOKIE_ERROR, "access denied"));
             writer.append(error);
         }catch (Exception e){
             e.printStackTrace();

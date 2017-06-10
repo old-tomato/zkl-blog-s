@@ -1,14 +1,17 @@
-package com.blog.utils;
+package com.blog.service;
 
 import com.blog.dao.security.UidQueueMapper;
+import com.blog.utils.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 /**
- * Created by 52426 on 2017/6/9.
+ * Created by 52426 on 2017/6/10.
  */
-public class BlogSecurityUtils {
+@Service
+public class BlogSecurityService {
 
     @Autowired
     private UidQueueMapper uidQueueMapper;
@@ -18,7 +21,10 @@ public class BlogSecurityUtils {
      * @return
      */
     public int createUid(){
-        int uid = uidQueueMapper.queryUid();
+        Integer uid = uidQueueMapper.queryUid();
+        if(uid == null){
+            uid = 0;
+        }
         uidQueueMapper.increaseUid();
         return uid;
     }

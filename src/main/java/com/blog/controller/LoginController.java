@@ -1,7 +1,7 @@
 package com.blog.controller;
 
+import com.blog.common.DataCodeConstants;
 import com.blog.common.DataMessage;
-import com.blog.dao.user.UserInfoMapper;
 import com.blog.model.UserInfo;
 import com.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +22,25 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/checkInfo" , method = RequestMethod.POST)
+    @RequestMapping(value = "/login" , method = RequestMethod.POST)
     @ResponseBody
     public DataMessage<UserInfo> login(@RequestBody UserInfo userInfo){
-
-        return new DataMessage<UserInfo>(userInfo);
+        UserInfo loginUserInfo = userService.login(userInfo);
+        return new DataMessage<UserInfo>(loginUserInfo);
     }
 
-    @RequestMapping(value = "/signIn", method = RequestMethod.POST)
+    @RequestMapping(value = "/autoLogin" , method = RequestMethod.POST)
     @ResponseBody
-    public DataMessage<String> signIn(@RequestBody UserInfo userInfo){
+    public DataMessage<UserInfo> autoLogin(@RequestBody UserInfo userInfo){
+        UserInfo logUserInfo = userService.loginWithCookie(userInfo);
+        return new DataMessage<UserInfo>(logUserInfo);
+    }
+
+    @RequestMapping(value = "/regist", method = RequestMethod.POST)
+    @ResponseBody
+    public DataMessage<String> regist(@RequestBody UserInfo userInfo){
         // 注册完成以后，返回COOKIE，然后进行登陆流程
-        String cookie = userService.singIn(userInfo);
-        if(StringUtils.isEmpty(cookie)){
-            // 存在用户名重复的问题
-            return new DataMessage<String>(DataMessage.CODE_ERROR , "用户名重复");
-        }
+        String cookie = userService.register(userInfo);
         return new DataMessage<String>(cookie);
     }
 }

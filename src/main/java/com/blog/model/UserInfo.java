@@ -12,6 +12,7 @@ public class UserInfo {
     private String password;
     private String mailAddress;
     private LocalDateTime createTime;
+    private String cookie;
 
     public int getId() {
         return id;
@@ -59,5 +60,13 @@ public class UserInfo {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
     }
 }

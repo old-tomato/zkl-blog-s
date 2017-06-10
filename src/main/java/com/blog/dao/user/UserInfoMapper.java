@@ -14,4 +14,6 @@ public interface UserInfoMapper {
     List<UserInfo> query();
     void insertNewUser(UserInfo userInfo);
     String queryUsernameRepeat(@Param("username")String username);
+    UserInfo queryOneUser(UserInfo userInfo);
+    UserInfo queryByUid(@Param("uid")int uid);
 }
