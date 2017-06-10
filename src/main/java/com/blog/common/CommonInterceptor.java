@@ -1,6 +1,7 @@
 package com.blog.common;
 
 import com.blog.dao.user.UserCookieMapper;
+import com.blog.exception.ServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -45,37 +46,14 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
         String cookie = request.getHeader(ZBLOG_HEAD);
         if(StringUtils.isEmpty(cookie)){
             // 返回登陆界面
-            backToLoginPage(response);
-            return false;
+            throw new ServiceException("auto login failed");
         }
         // 请求数据库返回的数据
         Integer uid = userCookieMapper.getUid(cookie);
         if(uid == null || uid == 0){
-            backToLoginPage(response);
-            return false;
+            throw new ServiceException("auto login failed");
         }
-        // 校验通过，更新COOKIE
-        userCookieMapper.updateCookie(uid);
         return true;
-    }
-
-    private void backToLoginPage(HttpServletResponse response){
-        PrintWriter writer = null;
-        try {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("text/html; charset=utf-8");
-            writer = response.getWriter();
-            ObjectMapper om = new ObjectMapper();
-                String error = om.writer().writeValueAsString(new DataMessage(DataCodeConstants.CODE_COOKIE_ERROR, "access denied"));
-            writer.append(error);
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if(writer != null){
-                writer.close();
-            }
-        }
-
     }
 
     private Map<String, String> getHeadersInfo(HttpServletRequest request) {

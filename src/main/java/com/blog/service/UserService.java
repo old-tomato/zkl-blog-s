@@ -7,6 +7,7 @@ import com.blog.model.UserCookieInfo;
 import com.blog.model.UserInfo;
 import com.blog.utils.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.SecurityContextProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +67,15 @@ public class UserService {
         userInfo.setPassword(MD5Utils.getM5Code(userInfo.getPassword()));
         UserInfo dbUserInfo = userInfoMapper.queryOneUser(userInfo);
         if(dbUserInfo != null){
+            String cookie = blogSecurityService.createCookie(dbUserInfo.getUid());
+            // 校验通过，更新COOKIE
+            int count = userCookieMapper.updateCookie(dbUserInfo.getUid(), cookie);
+            if(count > 0){
+                dbUserInfo.setCookie(cookie);
+            }else{
+                // 为了防止浏览器端没有COOKIE导致的服务器没有返回任何数据的问题
+                dbUserInfo.setCookie(userCookieMapper.queryCookie(dbUserInfo.getUid()));
+            }
             dbUserInfo.setPassword("");
             return dbUserInfo;
         }else{
@@ -76,10 +86,13 @@ public class UserService {
     public UserInfo loginWithCookie(UserInfo userInfo){
         Integer uid = userCookieMapper.getUid(userInfo.getCookie());
         if(uid == null || uid == 0){
-            return null;
+            throw new ServiceException("auto login failed");
         }
-        UserInfo logUser = userInfoMapper.queryByUid(uid);
-        return logUser;
+        UserInfo loginUser = userInfoMapper.queryByUid(uid);
+        if(loginUser == null){
+            throw new ServiceException("auto login failed");
+        }
+        return loginUser;
     }
 
 }

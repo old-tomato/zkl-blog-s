@@ -9,5 +9,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserCookieMapper {
     Integer getUid(@Param("cookie") String cookie);
     void insert(UserCookieInfo userCookieInfo);
-    void updateCookie(@Param("uid")int uid);
+    int updateCookie(@Param("uid")int uid, @Param("cookie")String cookie);
+    String queryCookie(@Param("uid")int uid);
 }

@@ -10,9 +10,10 @@
     </resultMap>
 
     <select id="getUid" resultType="Integer">
-        SELECT cookie FROM user_cookie t
+        SELECT uid FROM user_cookie t
         <![CDATA[
-          WHERE now() <= available_time,
+          WHERE now() <= available_time
+          AND
           t.cookie = #{cookie}
         ]]>
     </select>
@@ -26,8 +27,17 @@
 
     <update id="updateCookie">
         UPDATE user_cookie
-        SET cookie = (DATE_ADD(now(), INTERVAL 7 DAY))
-        WHERE uid = #{uid};
+        SET available_time = (DATE_ADD(now(), INTERVAL 7 DAY)), cookie=#{cookie}
+        WHERE uid = #{uid}
+        AND now() > available_time;
     </update>
+
+        <select id="queryCookie" resultType="string">
+        SELECT cookie FROM user_cookie t
+        <![CDATA[
+          WHERE
+          t.uid = #{uid}
+        ]]>
+    </select>
 
 </mapper>

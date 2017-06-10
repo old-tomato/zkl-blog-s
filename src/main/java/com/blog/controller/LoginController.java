@@ -2,6 +2,7 @@ package com.blog.controller;
 
 import com.blog.common.DataCodeConstants;
 import com.blog.common.DataMessage;
+import com.blog.exception.ServiceException;
 import com.blog.model.UserInfo;
 import com.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class LoginController {
     @ResponseBody
     public DataMessage<UserInfo> autoLogin(@RequestBody UserInfo userInfo){
         UserInfo logUserInfo = userService.loginWithCookie(userInfo);
+        if(logUserInfo == null){
+            throw new ServiceException("auto login failed");
+        }
         return new DataMessage<UserInfo>(logUserInfo);
     }
 

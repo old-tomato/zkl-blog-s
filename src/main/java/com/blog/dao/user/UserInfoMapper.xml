@@ -24,8 +24,8 @@
     <select id="queryUsernameRepeat" resultType="string">
         SELECT username
         FROM user_info
-        limit 1
         WHERE username=#{username}
+        limit 1
     </select>
 
     <select id="queryOneUser" resultMap="defaultMap">
@@ -39,8 +39,8 @@
     <select id="queryByUid" resultMap="defaultMap">
         SELECT id, uid, username, mail_address, create_time
         FROM user_info t
-        limit 1
         WHERE t.uid = #{uid}
+        limit 1
     </select>
 
 </mapper>
