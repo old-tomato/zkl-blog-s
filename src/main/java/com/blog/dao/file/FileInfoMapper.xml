@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.blog.dao.file.FileInfoMapper">
+    <resultMap id="defaultMap" type="com.blog.model.FileInfo">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="fileName" column="file_name"/>
+        <result property="fileDesc" column="file_desc"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="insertFile">
+        INSERT INTO file_info (id, uid, file_name, file_desc, content, create_time, update_time)
+        VALUE
+        (#{id},#{uid},#{fileName},#{fileDesc},#{content},now(),now())
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="queryFileSimpleInfo" resultMap="defaultMap">
+        SELECT id, uid, file_name, file_desc, create_time, update_time
+        FROM file_info f
+        WHERE 1 = 1
+        <if test="id > 0">AND f.id=#{id}</if>
+        <if test="uid > 0">AND f.uid=#{uid}</if>
+        ORDER BY update_time DESC
+    </select>
+
+    <select id="queryFileFullInfo" resultMap="defaultMap">
+        SELECT id, uid, file_name, file_desc, content, create_time, update_time
+        FROM file_info f
+        WHERE 1 = 1
+        <if test="id > 0">AND f.id=#{id}</if>
+    </select>
+
+    <update id="updateFileInfo">
+        UPDATE file_info
+        SET update_time=now()
+        <if test="!fileName.isEmpty()">, file_name=#{fileName}</if>
+        <if test="!fileDesc.isEmpty()">, file_desc=#{fileDesc}</if>
+        <if test="!content.isEmpty()">, content=#{content}</if>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteFile">
+        DELETE FROM file_info WHERE id=#{id}
+    </delete>
+
+</mapper>

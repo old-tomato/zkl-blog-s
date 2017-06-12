@@ -1,5 +1,7 @@
 package com.blog.common;
 
+import org.omg.PortableInterceptor.SUCCESSFUL;
+
 /**
  * Created by 52426 on 2017/6/8.
  */
@@ -8,6 +10,8 @@ public class DataMessage<T> {
     private int code;
     private String message;
     private T result;
+
+    public static final DataMessage SUCCESS = new DataMessage(null);
 
     /**
      * 默认情况下成功的返回

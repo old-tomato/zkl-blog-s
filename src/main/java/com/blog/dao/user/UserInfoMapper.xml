@@ -18,7 +18,7 @@
     </select>
 
     <insert id="insertNewUser">
-        insert into blog_center.user_info (uid, username, password, mail_address,create_time) value(#{uid} , #{username}, #{password}, #{mailAddress}, now());
+        insert into user_info (uid, username, password, mail_address,create_time) value(#{uid} , #{username}, #{password}, #{mailAddress}, now());
     </insert>
 
     <select id="queryUsernameRepeat" resultType="string">

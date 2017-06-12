@@ -29,7 +29,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        getHeadersInfo(request);
+//        getHeadersInfo(request);
         //这里做统一的COOKIE校验
         // 对于登陆以及注册的接口不校验COOKIE
         logger.info(request.getRequestURI());

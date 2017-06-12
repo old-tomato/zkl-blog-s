@@ -22,5 +22,16 @@ CREATE TABLE IF NOT EXISTS uid_queue(
   uid_queue INT UNSIGNED NOT NULL DEFAULT 1
 )ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS file_info(
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  uid int unsigned NOT NULL,
+  file_name VARCHAR(32) NOT NULL ,
+  file_desc VARCHAR(32) ,
+  content LONGTEXT,
+  create_time DATETIME NOT NULL,
+  update_time DATETIME NOT NULL,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
 # 初始化队列
 INSERT uid_queue VALUE (100000);
