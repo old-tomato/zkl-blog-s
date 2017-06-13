@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.blog.dao.security.IpAddressLogMapper">
+    <resultMap id="defaultMap" type="com.blog.model.security.IpAddressLogInfo">
+        <id property="id" column="id" />
+        <result property="ip" column="ip"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="insertUserIp">
+        INSERT INTO ip_address_log (ip, create_time) VALUE (#{ip}, now());
+    </insert>
+
+</mapper>

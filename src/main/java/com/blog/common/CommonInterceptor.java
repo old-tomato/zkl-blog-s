@@ -1,5 +1,6 @@
 package com.blog.common;
 
+import com.blog.dao.security.IpAddressLogMapper;
 import com.blog.dao.user.UserCookieMapper;
 import com.blog.exception.ServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,9 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
     private static final String ZBLOG_HEAD = "Z-Blog-Cookie";
 
     @Autowired
+    private IpAddressLogMapper ipAddressLogMapper;
+
+    @Autowired
     private UserCookieMapper userCookieMapper;
 
     @Override
@@ -33,6 +37,10 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
         //这里做统一的COOKIE校验
         // 对于登陆以及注册的接口不校验COOKIE
         logger.info(request.getRequestURI());
+
+        String ipAddress = getIpAddress(request);
+        ipAddressLogMapper.insertUserIp(ipAddress);
+
         String requestURI = request.getRequestURI();
         if(requestURI.equals("/login/login") || requestURI.equals("/login/regist")){
             return true;
@@ -66,6 +74,26 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
             logger.info("key ==> " + key + "  value ==> " + value);
         }
         return map;
+    }
+
+    public String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 
     @Override

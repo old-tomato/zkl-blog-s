@@ -33,5 +33,12 @@ CREATE TABLE IF NOT EXISTS file_info(
   PRIMARY KEY (id)
 )ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS ip_address_log(
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  ip VARCHAR(64) NOT NULL,
+  create_time DATETIME NOT NULL,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
 # 初始化队列
 INSERT uid_queue VALUE (100000);
