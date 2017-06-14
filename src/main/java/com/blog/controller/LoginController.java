@@ -47,4 +47,11 @@ public class LoginController {
         String cookie = userService.register(userInfo);
         return new DataMessage<String>(cookie);
     }
+
+    @RequestMapping(value = "/welcome")
+    @ResponseBody
+    public DataMessage welcome(){
+        return DataMessage.SUCCESS;
+    }
+
 }
